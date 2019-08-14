@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/aaron_tools/static/css/main.2cce8147.chunk.css",
+    "main.js": "/aaron_tools/static/js/main.7c266964.chunk.js",
+    "main.js.map": "/aaron_tools/static/js/main.7c266964.chunk.js.map",
+    "runtime~main.js": "/aaron_tools/static/js/runtime~main.958fa014.js",
+    "runtime~main.js.map": "/aaron_tools/static/js/runtime~main.958fa014.js.map",
+    "static/js/2.191d9033.chunk.js": "/aaron_tools/static/js/2.191d9033.chunk.js",
+    "static/js/2.191d9033.chunk.js.map": "/aaron_tools/static/js/2.191d9033.chunk.js.map",
+    "index.html": "/aaron_tools/index.html",
+    "precache-manifest.b0b0131697d2d7ab85ef6963c544fc45.js": "/aaron_tools/precache-manifest.b0b0131697d2d7ab85ef6963c544fc45.js",
+    "service-worker.js": "/aaron_tools/service-worker.js",
+    "static/css/main.2cce8147.chunk.css.map": "/aaron_tools/static/css/main.2cce8147.chunk.css.map"
+  }
+}
