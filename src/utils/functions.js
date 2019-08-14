@@ -73,7 +73,7 @@ const checkPid = (pid, type) => {
       checkNumber = 1 * checkNumber.toString().substring(checkNumber.toString().length, 1);
     }
     if (1 * pid.toString().substring(10) !== checkNumber) {
-      return { result: false, msg: '驗證失敗' };
+      // return { result: false, msg: '驗證失敗' };
     }
   }
 
@@ -88,7 +88,7 @@ const nums = [...Array(10).keys()];
 const times = [...Array(8).keys()];
 
 // 居留證
-const secondLetter = [0, 1, 2, 3]; // 居留證號第二碼 A, B ,C , D => 0, 1, 2, 3
+const secondLetter = ['A', 'B', 'C', 'D']; // 居留證號第二碼
 
 const genRestNums = () => {
   let restNum = [];
@@ -124,21 +124,25 @@ export const generateCitizenId = () => {
  */
 export const generateForeignerId = () => {
   // 取得第一碼
-  const key = keys[Math.floor(Math.random() * keys.length)];
+  const firstkey = keys[Math.floor(Math.random() * keys.length)];
 
   // 第一碼轉數字
-  const keyNumber = letterMapping.get(key.toUpperCase());
+  const firstNumber = letterMapping.get(firstkey.toUpperCase());
 
   // 取得第二碼
-  const firstNum = secondLetter[Math.floor(Math.random() * secondLetter.length)];
+  const secKey = secondLetter[Math.floor(Math.random() * secondLetter.length)];
+
+  // 第二碼轉數字
+  let secNumber = letterMapping.get(secKey.toUpperCase());
+  // console.log('1', secNumber);
+  secNumber = secNumber.toString().substr(1, 1);
+  // console.log('2', secNumber);
 
   const restNums = genRestNums();
 
-  const id = `${key}${firstNum}${restNums}`;
-  const checkId = `${keyNumber}${firstNum}${restNums}`;
+  const id = `${firstkey}${secKey}${restNums}`;
+  const checkId = `${firstNumber}${secNumber}${restNums}`;
 
-  // console.log(id, checkId);
   const { result } = checkPid(checkId, 1);
   return result ? id : generateForeignerId();
-  // return id;
 }
