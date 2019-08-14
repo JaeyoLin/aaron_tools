@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
 } from 'react';
+import Button from '@material-ui/core/Button';
 
 import {
   generateCitizenId,
@@ -36,7 +37,9 @@ const Tools = () => {
 
   return (
     <>
-      <button onClick={handleRandom}>Random</button>
+      <Button variant="contained" color="primary" onClick={handleRandom}>
+        Random
+      </Button>
       <p>身分證字號</p>
       <ul>
         {
