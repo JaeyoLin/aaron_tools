@@ -78,7 +78,7 @@ const Tools = () => {
           ids.map(id => (<ListRow text={id} />))
         }
       </ul>
-      <p>拘留證號</p>
+      <p>居留證號</p>
       <ul>
         {
           livingIds.map(livingId => (<ListRow text={livingId} />))
