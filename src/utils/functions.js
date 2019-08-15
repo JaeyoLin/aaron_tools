@@ -33,7 +33,7 @@ const letterMapping = new Map([
 const citizenMultiplier = [1, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1];
 
 // 外國人 - 驗證規則相乘的數
-const foreignerMultiplier = 1987654321;
+const foreignerMultiplier = [1, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 /**
  * checkPid
@@ -80,6 +80,114 @@ const checkPid = (pid, type) => {
   return {result: true};
 };
 
+/**
+ * studIdNumberIdentify
+ *
+ * 第一個字元代表地區，轉換方式為：A轉換成1,0兩個字元，B轉換成1,1……但是Z、I、O分別轉換為33、34、35
+ * 第二個字元代表性別，1代表男性，2代表女性
+ * 第三個字元到第九個字元為流水號碼
+ * 第十個字元為檢查號碼
+ * 每個相對應的數字相乘，如A123456789代表1、0、1、2、3、4、5、6、7、8，相對應乘上1987654321，再相加
+ * 相加後的值除以模數，也就是10，取餘數再以模數10減去餘數，若等於檢查碼，則驗證通過
+ * @param {boolean} nationality - 是否為本國人
+ * @param {string} idNumber - 身分證字號 or 居留證號
+ */
+const studIdNumberIdentify = (nationality, idNumber) => {
+  let studIdNumber = idNumber.toUpperCase();
+
+  // 本國人
+  if (nationality) {
+    // 驗證填入身分證字號長度及格式
+    if (studIdNumber.length !== 10) {
+      // alert("長度不足");
+      return false;
+    }
+
+    // 格式，用正則表示式比對第一個字母是否為英文字母
+    if (
+      isNaN(studIdNumber.substr(1, 9))
+      || (!/^[A-Z]$/.test(studIdNumber.substr(0, 1)))
+    ) {
+      // alert("格式錯誤");
+      return false;
+    }
+
+    // 按照轉換後權數的大小進行排序
+    const idHeader = 'ABCDEFGHJKLMNPQRSTUVXYWZIO';
+
+    // 這邊把身分證字號轉換成準備要對應的
+    studIdNumber = (idHeader.indexOf(studIdNumber.substring(0, 1)) + 10) + '' + studIdNumber.substr(1, 9);
+
+    // 開始進行身分證數字的相乘與累加，依照順序乘上1987654321
+    const s = parseInt(studIdNumber.substr(0, 1))
+      + parseInt(studIdNumber.substr(1, 1)) * 9
+      + parseInt(studIdNumber.substr(2, 1)) * 8
+      + parseInt(studIdNumber.substr(3, 1)) * 7
+      + parseInt(studIdNumber.substr(4, 1)) * 6
+      + parseInt(studIdNumber.substr(5, 1)) * 5
+      + parseInt(studIdNumber.substr(6, 1)) * 4
+      + parseInt(studIdNumber.substr(7, 1)) * 3
+      + parseInt(studIdNumber.substr(8, 1)) * 2
+      + parseInt(studIdNumber.substr(9, 1));
+
+    const checkNum = parseInt(studIdNumber.substr(10, 1));
+
+    // 模數 - 總和/模數(10)之餘數若等於第九碼的檢查碼，則驗證成功
+    // 若餘數為0，檢查碼就是0
+    if ((s % 10) === 0 || (10 - s % 10) === checkNum) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    // 外籍生，居留證號規則跟身分證號差不多，只是第二碼也是英文字母代表性別，跟第一碼轉換二位數字規則相同，但只取餘數
+    // 驗證填入身分證字號長度及格式
+    if (studIdNumber.length !== 10) {
+      // alert("長度不足");
+      return false;
+    }
+
+    // 格式，用正則表示式比對第一個字母是否為英文字母
+    if (
+      isNaN(studIdNumber.substr(2, 8))
+      || (!/^[A-Z]$/.test(studIdNumber.substr(0, 1)))
+      || (!/^[A-Z]$/.test(studIdNumber.substr(1, 1)))
+    ) {
+      // alert("格式錯誤");
+      return false;
+    }
+
+    // 按照轉換後權數的大小進行排序
+    const idHeader = 'ABCDEFGHJKLMNPQRSTUVXYWZIO';
+
+    // 這邊把身分證字號轉換成準備要對應的
+    studIdNumber = (idHeader.indexOf(studIdNumber.substring(0, 1)) + 10) + '' + ((idHeader.indexOf(studIdNumber.substr(1, 1)) + 10) % 10) + '' + studIdNumber.substr(2, 8);
+
+    // 開始進行身分證數字的相乘與累加，依照順序乘上1987654321
+    const s = parseInt(studIdNumber.substr(0, 1))
+      + parseInt(studIdNumber.substr(1, 1)) * 9
+      + parseInt(studIdNumber.substr(2, 1)) * 8
+      + parseInt(studIdNumber.substr(3, 1)) * 7
+      + parseInt(studIdNumber.substr(4, 1)) * 6
+      + parseInt(studIdNumber.substr(5, 1)) * 5
+      + parseInt(studIdNumber.substr(6, 1)) * 4
+      + parseInt(studIdNumber.substr(7, 1)) * 3
+      + parseInt(studIdNumber.substr(8, 1)) * 2
+      + parseInt(studIdNumber.substr(9, 1));
+
+    // 檢查號碼 = 10 - 相乘後個位數相加總和之尾數
+    const checkNum = parseInt(studIdNumber.substr(10, 1));
+
+    // 模數 - 總和/模數(10)之餘數若等於第九碼的檢查碼，則驗證成功
+    // 若餘數為0，檢查碼就是0
+    if ((s % 10) === 0 || (10 - s % 10) === checkNum) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+};
+
 const keys = [...letterMapping.keys()];
 
 // 身分證
@@ -112,8 +220,7 @@ export const generateCitizenId = () => {
   const firstNum = genders[Math.floor(Math.random() * genders.length)];
 
   const id = `${key}${firstNum}${genRestNums()}`;
-  // console.log('id', id);
-  const { result } = checkPid(id, 0);
+  const result = studIdNumberIdentify(true, id);
   return result ? id : generateCitizenId();
 };
 
@@ -126,23 +233,11 @@ export const generateForeignerId = () => {
   // 取得第一碼
   const firstkey = keys[Math.floor(Math.random() * keys.length)];
 
-  // 第一碼轉數字
-  const firstNumber = letterMapping.get(firstkey.toUpperCase());
-
   // 取得第二碼
   const secKey = secondLetter[Math.floor(Math.random() * secondLetter.length)];
 
-  // 第二碼轉數字
-  let secNumber = letterMapping.get(secKey.toUpperCase());
-  // console.log('1', secNumber);
-  secNumber = secNumber.toString().substr(1, 1);
-  // console.log('2', secNumber);
+  const id = `${firstkey}${secKey}${genRestNums()}`;
 
-  const restNums = genRestNums();
-
-  const id = `${firstkey}${secKey}${restNums}`;
-  const checkId = `${firstNumber}${secNumber}${restNums}`;
-
-  const { result } = checkPid(checkId, 1);
+  const result = studIdNumberIdentify(false, id);
   return result ? id : generateForeignerId();
 }
