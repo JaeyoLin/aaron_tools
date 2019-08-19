@@ -135,7 +135,7 @@ const studIdNumberIdentify = (nationality, idNumber) => {
     // 模數 - 總和/模數(10)之餘數若等於第九碼的檢查碼，則驗證成功
     // 若餘數為0，檢查碼就是0
     // if ((s % 10) === 0 || (10 - s % 10) === checkNum) {
-    if ((10 - s % 10) === checkNum) {
+    if (((10 - (s % 10)) % 10) === checkNum) {
       return true;
     } else {
       return false;
@@ -182,7 +182,8 @@ const studIdNumberIdentify = (nationality, idNumber) => {
     // 模數 - 總和/模數(10)之餘數若等於第九碼的檢查碼，則驗證成功
     // 若餘數為0，檢查碼就是0
     // if ((s % 10) === 0 || (10 - s % 10) === checkNum) {
-    if ((10 - s % 10) === checkNum) {
+    
+    if (((10 - (s % 10)) % 10) === checkNum) {
       return true;
     } else {
       return false;
